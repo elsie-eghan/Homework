@@ -1,0 +1,69 @@
+<html>
+
+<head>
+    <title>Welcome to Elsie's landing page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome to Elsie's landing page</h1>
+        <img src=https://img.myloview.com/murals/happy-book-worm-cartoon-mascot-character-waving-for-greeting-vector-illustration-isolated-on-white-background-with-speech-bubble-hello-text-700-131499253.jpg width=500&height=600&quality=100&coordinates=40%2C0%2C40%2C0/>
+
+        <h2>About Me</h2>
+        <p>
+            Hello, my name is Elsie. I go to Duke University and I am majoring in Computer Science and Electrical Engineering
+
+        </p>
+
+        <h2>GitHub</h2>
+        <p>
+            My GitHb username is elsie-eghan
+            <a href="https://github.com/your-username">github.com/elsie-eghan</a>
+        </p>
+
+        <h2>Please enter your github username and email below</h2>
+        <form action="form-handler.php" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label>Gender:</label><br>
+            <input type="radio" id="male" name="gender" value="male" required>
+            <label for="male">Male</label><br>
+
+            <input type="radio" id="female" name="gender" value="female" required>
+            <label for="female">Female</label><br>
+
+            <input type="radio" id="other" name="gender" value="other" required>
+            <label for="other">Other</label><br><br>
+
+            <label for="message">Message:</label><br>
+            <textarea id="I would like you to know" name="I would like you to know" required></textarea><br><br>
+
+            <input type="checkbox" id="subscribe" name="subscribe" value="yes">
+            <label for="subscribe">I like your webpage</label><br><br>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+
+</html>
