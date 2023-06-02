@@ -1,0 +1,12 @@
+.first-box {
+    border: 5px solid rgb(71, 61, 61);
+    border-radius: 10px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    display: flex;
+    justify-content: center;
+  
+    background-color: gray;
+    color: white;
+  }
+  
