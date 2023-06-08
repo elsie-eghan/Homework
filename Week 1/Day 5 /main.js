@@ -1,146 +1,92 @@
+
+import firebase from 'firebase/app';
+import 'firebase/database'; // Use 'firebase/firestore' for Firestore
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyDSgl8BqRe9HPcfcmCcterVOuK4ckY1Ihc",
+  authDomain: "task-list-7bb3b.firebaseapp.com",
+  projectId: "task-list-7bb3b",
+  storageBucket: "task-list-7bb3b.appspot.com",
+  messagingSenderId: "439576102041",
+  appId: "1:439576102041:web:596a1f4b8bc1cdc21ca408"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+class TaskList {
+  constructor() {
+    this.tasksRef = database.ref('tasks');
+    this.tasks = [];
+  }
+
+  addTask(task) {
+    const newTaskRef = this.tasksRef.push();
+    task.id = newTaskRef.key;
+    newTaskRef.set(task);
+  }
+
+  getAllTasks(callback) {
+    this.tasksRef.on('value', snapshot => {
+      const tasksData = snapshot.val();
+      this.tasks = tasksData ? Object.values(tasksData) : [];
+      callback(this.tasks);
+    });
+  }
+
+  getTaskById(id, callback) {
+    const taskRef = this.tasksRef.child(id);
+    taskRef.on('value', snapshot => {
+      const task = snapshot.val();
+      callback(task);
+    });
+  }
+
+  updateTask(id, updatedTask) {
+    const taskRef = this.tasksRef.child(id);
+    taskRef.update(updatedTask);
+  }
+
+  deleteTask(id) {
+    const taskRef = this.tasksRef.child(id);
+    taskRef.remove();
+  }
+}
+
 class Task {
-    constructor(title, description, priority) {
-      this.title = title;
-      this.description = description;
-      this.priority = priority;
-    }
-  
-    static fromJSON(json) {
-      return new Task(json.title, json.description, json.priority);
-    }
+  constructor(id, title, description) {
+    this.id = id;
+    this.title = title;
+    this.description = description;
   }
-  
-  class UI {
-    constructor() {
-      this.form = document.getElementById('form');
-  
-      this.title = document.getElementById('title-input');
-      this.description = document.getElementById('description-input');
-      this.priority = document.getElementById('priority-input');
-  
-      this.tableBody = document.getElementById('table-body');
-  
-      this.form.addEventListener('submit', (e) => this.onFormSubmit(e));
-  
-      this.tasks = [];
-      this.loadTasksFromLocalStorage();
-      this.renderTaskTable();
-    }
-  
-    onFormSubmit(e) {
-      e.preventDefault();
-  
-      if (
-        this.title.value === '' ||
-        this.description.value === '' ||
-        this.priority.value === ''
-      ) {
-        return;
-      }
-  
-      const task = new Task(
-        this.title.value,
-        this.description.value,
-        this.priority.value
-      );
-  
-      this.tasks.push(task);
-  
-      this.saveTasksToLocalStorage();
-      this.renderTaskTable();
-  
-      this.title.value = '';
-      this.description.value = '';
-      this.priority.value = '';
-    }
-  
-    renderTaskTable() {
-      this.tableBody.innerHTML = '';
-  
-      for (let i = 0; i < this.tasks.length; i++) {
-        const task = this.tasks[i];
-  
-        const tr = this.createTaskTableRow(task);
-        this.tableBody.appendChild(tr);
-      }
-    }
-  
-    createTaskTableRow(task) {
-      const tr = document.createElement('tr');
-  
-      const tdTitle = document.createElement('td');
-      const tdDescription = document.createElement('td');
-      const tdPriority = document.createElement('td');
-      const tdActions = document.createElement('td');
-  
-      tdTitle.innerHTML = task.title;
-      tdDescription.innerHTML = task.description;
-      tdPriority.innerHTML = task.priority;
-  
-      const actionButtons = this.createActionButtons(task);
-      tdActions.appendChild(actionButtons[0]);
-      tdActions.appendChild(actionButtons[1]);
-  
-      tr.appendChild(tdTitle);
-      tr.appendChild(tdDescription);
-      tr.appendChild(tdPriority);
-      tr.appendChild(tdActions);
-  
-      return tr;
-    }
-  
-    createActionButtons(task) {
-      const deleteButton = document.createElement('button');
-      const editButton = document.createElement('button');
-  
-      deleteButton.setAttribute('class', 'btn btn-danger btn-sm');
-      deleteButton.innerHTML = 'Delete';
-      deleteButton.addEventListener('click', () =>
-        this.onRemoveTaskClicked(task)
-      );
-  
-      editButton.setAttribute('class', 'btn btn-warning btn-sm ms-2');
-      editButton.innerHTML = 'Edit';
-      editButton.addEventListener('click', () => this.onEditTaskClicked(task));
-  
-      return [deleteButton, editButton];
-    }
-  
-    onRemoveTaskClicked(task) {
-      this.tasks = this.tasks.filter((x) => {
-        return task.title !== x.title;
-      });
-  
-      this.saveTasksToLocalStorage();
-      this.renderTaskTable();
-    }
-  
-    onEditTaskClicked(task) {
-      this.title.value = task.title;
-      this.description.value = task.description;
-      this.priority.value = task.priority;
-  
-      this.tasks = this.tasks.filter((x) => {
-        return task.title !== x.title;
-      });
-  
-      this.saveTasksToLocalStorage();
-      this.renderTaskTable();
-    }
-  
-    saveTasksToLocalStorage() {
-      const json = JSON.stringify(this.tasks);
-      localStorage.setItem('tasks', json);
-    }
-  
-    loadTasksFromLocalStorage() {
-      const json = localStorage.getItem('tasks');
-      if (json) {
-        const taskArr = JSON.parse(json);
-        this.tasks = taskArr.map((x) => Task.fromJSON(x));
-      }
-    }
-  }
-  
-  const ui = new UI();
-  
+}
+
+
+const taskList = new TaskList();
+
+const task1 = new Task(null, 'Task 1', 'Description of Task 1');
+const task2 = new Task(null, 'Task 2', 'Description of Task 2');
+
+
+taskList.addTask(task1);
+taskList.addTask(task2);
+
+
+taskList.getAllTasks(tasks => {
+  console.log(tasks);
+});
+
+
+const taskId = 'your-task-id';
+taskList.getTaskById(taskId, task => {
+  console.log(task);
+});
+
+
+const updatedTask = new Task(null, 'Updated Task 2', 'Updated description');
+taskList.updateTask(taskId, updatedTask);
+
+
+taskList.deleteTask(taskId);
