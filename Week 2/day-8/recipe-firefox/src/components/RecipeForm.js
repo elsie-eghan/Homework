@@ -7,7 +7,14 @@ const RecipeForm = ({ onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ title, description, ingredients });
+    // Perform validation or any additional logic here
+    const newRecipe = {
+      id: Date.now(),
+      title,
+      description,
+      ingredients,
+    };
+    onSubmit(newRecipe); // Call the onSubmit function passed as prop
     setTitle('');
     setDescription('');
     setIngredients('');
@@ -16,9 +23,12 @@ const RecipeForm = ({ onSubmit }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-3">
-        <label className="form-label">Title</label>
+        <label htmlFor="title" className="form-label">
+          Title
+        </label>
         <input
           type="text"
+          id="title"
           className="form-control"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -26,26 +36,30 @@ const RecipeForm = ({ onSubmit }) => {
         />
       </div>
       <div className="mb-3">
-        <label className="form-label">Description</label>
+        <label htmlFor="description" className="form-label">
+          Description
+        </label>
         <textarea
+          id="description"
           className="form-control"
-          rows="3"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
         ></textarea>
       </div>
       <div className="mb-3">
-        <label className="form-label">Ingredients</label>
+        <label htmlFor="ingredients" className="form-label">
+          Ingredients
+        </label>
         <textarea
+          id="ingredients"
           className="form-control"
-          rows="3"
           value={ingredients}
           onChange={(e) => setIngredients(e.target.value)}
           required
         ></textarea>
       </div>
-      <button type="submit" className="btn btn-outline-primary">
+      <button type="submit" className="btn btn-primary">
         Add Recipe
       </button>
     </form>
