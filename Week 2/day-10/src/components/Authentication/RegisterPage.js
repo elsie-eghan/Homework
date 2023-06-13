@@ -6,10 +6,13 @@ import { Link } from 'react-router-dom';
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false); // State to track loading state
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    setLoading(true); // Set loading state to true
 
     // Register the user using Firebase authentication
     createUserWithEmailAndPassword(auth, email, password)
@@ -23,6 +26,9 @@ const RegisterPage = () => {
         // Registration failed
         console.error('Error registering:', error);
         // Handle the error appropriately (e.g., display an error message)
+      })
+      .finally(() => {
+        setLoading(false); // Set loading state back to false
       });
   };
 
@@ -50,7 +56,15 @@ const RegisterPage = () => {
             placeholder="Password"
             required
           />
-          <button type="submit">Register</button>
+          <button type="submit" disabled={loading}>
+            {loading ? (
+              <div className="spinner-border spinner-border-sm" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            ) : (
+              'Register'
+            )}
+          </button>
         </form>
       )}
     </div>

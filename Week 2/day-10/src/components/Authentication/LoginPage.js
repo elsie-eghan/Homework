@@ -6,6 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false); // State to track loading state
   const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
@@ -19,6 +20,8 @@ function LoginPage() {
   const handleLogin = (e) => {
     e.preventDefault(); // Prevent form submission and page refresh
 
+    setLoading(true); // Set loading state to true
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Login successful
@@ -31,6 +34,9 @@ function LoginPage() {
         // Login failed
         console.error('Error logging in:', error);
         // Handle the error appropriately (e.g., display an error message)
+      })
+      .finally(() => {
+        setLoading(false); // Set loading state back to false
       });
   };
 
@@ -46,7 +52,15 @@ function LoginPage() {
           <label>Password:</label>
           <input type="password" value={password} onChange={handlePasswordChange} />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? (
+            <div className="spinner-border spinner-border-sm" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          ) : (
+            'Login'
+          )}
+        </button>
       </form>
       <p>
         Don't have an account? <Link to="/register">Register</Link>
