@@ -51,29 +51,33 @@ function App() {
     }
   };
 
-  const deleteRecipe = async (recipeId) => {
-    try {
-      await deleteDoc(doc(db, 'recipes', recipeId.toString()));
-      // Remove the recipe from the local state only after successful deletion on the server
-      setRecipes(recipes.filter((recipe) => recipe.id !== recipeId));
-    } catch (error) {
-      console.error('Error deleting recipe:', error);
-    }
-  };
-  
+ const deleteRecipe = async (recipeId) => {
+  try {
+    await deleteDoc(doc(db, 'recipes', recipeId));
+    const updatedRecipes = recipes.filter((recipe) => recipe.id !== recipeId);
+    setRecipes(updatedRecipes);
+    // Update recipes data in local storage
+    localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
+  } catch (error) {
+    console.error('Error deleting recipe:', error);
+  }
+};
   
 
-  const updateRecipe = async (recipe) => {
-    try {
-      await updateDoc(doc(db, 'recipes', recipe.id), recipe);
-      const updatedRecipes = recipes.map((r) => (r.id === recipe.id ? { ...r, ...recipe } : r));
-      setRecipes(updatedRecipes);
-      // Update recipes data in local storage
-      localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
-    } catch (error) {
-      console.error('Error updating recipe:', error);
-    }
-  };
+const updateRecipe = async (updatedRecipe) => {
+  try {
+    await updateDoc(doc(db, 'recipes', updatedRecipe.id), updatedRecipe);
+    const updatedRecipes = recipes.map((recipe) =>
+      recipe.id === updatedRecipe.id ? updatedRecipe : recipe
+    );
+    setRecipes(updatedRecipes);
+    // Update recipes data in local storage
+    localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
+  } catch (error) {
+    console.error('Error updating recipe:', error);
+  }
+};
+
 
   return (
     <Router>
